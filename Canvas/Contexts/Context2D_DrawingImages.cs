@@ -46,6 +46,11 @@ namespace Excubo.Blazor.Canvas.Contexts
         /// <returns></returns>
         [Group(typeof(_JS), "drawImage"), Group(typeof(_DrawingImages))]
         public ValueTask DrawImageAsync(string image, double sx, double sy, double swidth, double sheight, double dx, double dy, double dwidth, double dheight) => InvokeEvalAsync($"let image_data = {image}; {ctx}.drawImage(image_data, {sx.ToInvariantString()}, {sy.ToInvariantString()}, {swidth.ToInvariantString()}, {sheight.ToInvariantString()}, {dx.ToInvariantString()}, {dy.ToInvariantString()}, {dwidth.ToInvariantString()}, {dheight.ToInvariantString()})");
+        public ValueTask DownloadAndDrawImageAsync(string url, double dx, double dy) {
+            System.Random random = new();
+            string image = $"image{random.Next(999999)}";
+            return InvokeEvalAsync($"var {image} = new Image(); {image}.onload = function() {{ {ctx}.drawImage({image}, {dx.ToInvariantString()}, {dy.ToInvariantString()}); }}; {image}.src = '{url}';");
+        }
     }
     public partial class Batch2D
     {
